@@ -1,0 +1,11 @@
+name: MobFriend
+version: '${version}'
+main: plugin.mobfriend.Main
+api-version: '1.20'
+commands:
+  captureFriend:
+    description: Capture a friend by using a golden apple
+  showFriend:
+    description: Show captured friends
+  byeFriend:
+    description: Remove a friend from your friend list

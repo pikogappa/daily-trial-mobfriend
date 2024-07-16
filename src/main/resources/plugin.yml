@@ -9,3 +9,5 @@ commands:
     description: Show captured friends
   byeFriend:
     description: Remove a friend from your friend list
+  battleFriend:
+    description: Start a battle with your friend and an enemy mob

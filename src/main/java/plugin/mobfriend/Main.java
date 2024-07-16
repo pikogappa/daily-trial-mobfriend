@@ -3,6 +3,7 @@ package plugin.mobfriend;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import plugin.mobfriend.command.BattleFriendCommand;
 import plugin.mobfriend.command.ByeFriendCommand;
 import plugin.mobfriend.command.CaptureFriendCommand;
 import plugin.mobfriend.command.ShowFriendCommand;
@@ -25,6 +26,9 @@ public final class Main extends JavaPlugin {
 
         ByeFriendCommand byeFriendCommand = new ByeFriendCommand(friendManager);
         getCommand("byeFriend").setExecutor(byeFriendCommand);
+
+        BattleFriendCommand battleFriendCommand = new BattleFriendCommand(this, friendManager);
+        getCommand("battleFriend").setExecutor(battleFriendCommand);
     }
 
     @Override

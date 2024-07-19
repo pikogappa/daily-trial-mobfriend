@@ -19,7 +19,7 @@ public class ByeFriendCommand implements CommandExecutor {
     if (sender instanceof Player player) {
       if (friendManager.checkFriends(player)) {
         friendManager.removeAllFriends(player);
-        player.sendMessage(ChatColor.GREEN + "全てのフレンドとお別れしました！");
+        player.sendMessage(ChatColor.GREEN + "フレンドとお別れしました！");
       } else {
         player.sendMessage(ChatColor.RED + "フレンドがいません！");
       }

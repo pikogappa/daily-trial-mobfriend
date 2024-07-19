@@ -25,4 +25,5 @@ public class FriendManager {
   public void removeAllFriends(Player player) {
     playerFriends.remove(player);
   }
+
 }

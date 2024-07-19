@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import plugin.mobfriend.FriendManager;
-import plugin.mobfriend.MobStatus;
+import plugin.mobfriend.FriendStatus;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.Map;
 public class BattleFriendCommand implements CommandExecutor {
   private FriendManager friendManager;
   private JavaPlugin plugin;
-  private Map<LivingEntity, MobStatus> mobStatuses = new HashMap<>();
+  private Map<LivingEntity, FriendStatus> mobStatuses = new HashMap<>();
   private BossBar enemyBossBar;
   private BossBar friendBossBar;
 
@@ -47,23 +47,22 @@ public class BattleFriendCommand implements CommandExecutor {
       String friendType = friends.get(0); // 1匹だけ表示する
 
       EntityType friendEntityType;
-      MobStatus friendStatus;
+      FriendStatus friendStatus;
 
       switch (friendType) {
         case "POLAR_BEAR":
           friendEntityType = EntityType.POLAR_BEAR;
-          friendStatus = new MobStatus(50, 15, 5, 10);
+          friendStatus = new FriendStatus(50, 15, 5, 10);
           break;
         case "DOLPHIN":
           friendEntityType = EntityType.DOLPHIN;
-          friendStatus = new MobStatus(40, 12, 3, 20);
+          friendStatus = new FriendStatus(40, 12, 3, 20);
           break;
         case "HOGLIN":
           friendEntityType = EntityType.HOGLIN;
-          friendStatus = new MobStatus(60, 18, 8, 8);
+          friendStatus = new FriendStatus(60, 18, 8, 8);
           break;
         default:
-          player.sendMessage(ChatColor.RED + "未知のフレンドタイプです。");
           return true;
       }
 
@@ -80,7 +79,7 @@ public class BattleFriendCommand implements CommandExecutor {
 
       // フレンドと敵モブのステータスを設定
       mobStatuses.put(friend, friendStatus);
-      mobStatuses.put(enemy, new MobStatus(50, 12, 6, 8));
+      mobStatuses.put(enemy, new FriendStatus(50, 12, 6, 8));
 
       // ボスバーの設定
       enemyBossBar = Bukkit.createBossBar("敵: ZOMBIE", BarColor.RED, BarStyle.SOLID);
@@ -117,8 +116,8 @@ public class BattleFriendCommand implements CommandExecutor {
                 return;
               }
 
-              MobStatus friendStatus = mobStatuses.get(friend);
-              MobStatus enemyStatus = mobStatuses.get(enemy);
+              FriendStatus friendStatus = mobStatuses.get(friend);
+              FriendStatus enemyStatus = mobStatuses.get(enemy);
 
               if (playerTurn) {
                 // プレイヤーのターン
@@ -156,7 +155,7 @@ public class BattleFriendCommand implements CommandExecutor {
     return damage > 0 ? damage : 1; // 最低でも1のダメージを与える
   }
 
-  private void updateBossBar(BossBar bossBar, MobStatus status) {
+  private void updateBossBar(BossBar bossBar, FriendStatus status) {
     double progress = Math.max(0.0, Math.min(1.0, status.getHp() / 100.0));
     bossBar.setProgress(progress);
   }

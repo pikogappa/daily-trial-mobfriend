@@ -96,7 +96,6 @@ public class BattleFriendCommand implements CommandExecutor {
       new BukkitRunnable() {
         @Override
         public void run() {
-//          player.sendMessage(ChatColor.GREEN + "バトル開始！");
 
           // バトルロジック
           new BukkitRunnable() {
@@ -141,9 +140,9 @@ public class BattleFriendCommand implements CommandExecutor {
 
               playerTurn = !playerTurn; // ターンの切り替え
             }
-          }.runTaskTimer(plugin, 0L, 40L); // 1秒ごとに実行
+          }.runTaskTimer(plugin, 0L, 40L); // 2秒ごとに実行
         }
-      }.runTaskLater(plugin, 100L); // 5秒後にバトル開始（100 ticks = 3秒）
+      }.runTaskLater(plugin, 100L); // 5秒後にバトル開始（100 ticks = 5秒）
 
       return true;
     }
@@ -167,16 +166,3 @@ public class BattleFriendCommand implements CommandExecutor {
       enemy.remove();
     }
   }
-
-//  private void cleanup(LivingEntity friend, LivingEntity enemy) {
-//    if (enemyBossBar != null) {
-//      enemyBossBar.removeAll();
-//    }
-//    if (friendBossBar != null) {
-//      friendBossBar.removeAll();
-//    }
-//    if (friend != null && !friend.isDead()) {
-//      friend.remove();
-//    }
-//  }
-//}

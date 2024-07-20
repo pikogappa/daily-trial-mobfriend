@@ -1,5 +1,7 @@
 package plugin.mobfriend.command;
 
+import java.util.ArrayList;
+import java.util.Objects;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,6 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import plugin.mobfriend.FriendManager;
+import plugin.mobfriend.FriendStatus;
 
 import java.util.List;
 
@@ -43,7 +46,7 @@ public class ShowFriendCommand implements CommandExecutor, Listener {
       return;
     }
 
-    ItemStack friendItem = getItemStack(friends);
+    ItemStack friendItem = getItemStack(friends,player);
     friendInventory.setItem(0, friendItem);
 
     // 2-9スロットにバリアブロックを配置
@@ -60,7 +63,7 @@ public class ShowFriendCommand implements CommandExecutor, Listener {
     player.openInventory(friendInventory);
   }
 
-  private static ItemStack getItemStack(List<String> friends) {
+  private ItemStack getItemStack(List<String> friends, Player player) {
     ItemStack friendItem;
     String friend = friends.get(0); // 1匹だけ表示する
     friendItem = switch (friend) {
@@ -69,11 +72,26 @@ public class ShowFriendCommand implements CommandExecutor, Listener {
       case "HOGLIN" -> new ItemStack(Material.HOGLIN_SPAWN_EGG);
       default -> new ItemStack(Material.BARRIER);
     };
+
     ItemMeta meta = friendItem.getItemMeta();
     if (meta != null) {
       meta.setDisplayName(ChatColor.GREEN + friend);
       friendItem.setItemMeta(meta);
     }
+
+    FriendStatus status = friendManager.getFriendStatus(player);
+    System.out.println(status);
+    if (status != null && meta != null)  {
+      List<String> lore = new ArrayList<>();
+      lore.add(ChatColor.GREEN + "レベル: " + status.getLevel());
+      lore.add(ChatColor.GREEN + "HP: " + status.getHp());
+      lore.add(ChatColor.GREEN + "攻撃力: " + status.getAttack());
+      lore.add(ChatColor.GREEN + "防御力: " + status.getDefense());
+      lore.add(ChatColor.GREEN + "スピード: " + status.getSpeed());
+      meta.setLore(lore);
+      friendItem.setItemMeta(meta);
+    }
+
     return friendItem;
   }
 

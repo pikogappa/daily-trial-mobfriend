@@ -110,8 +110,7 @@ public class CaptureFriendCommand extends BaseCommand implements Listener {
             return;
         }
 
-        friendStatuses.put(player.getUniqueId().toString(), status);
-        friendManager.addFriend(player, entityName);
+        friendManager.addFriend(player, entityName, status);
         entity.remove();
 
         for (Entity mob : spawnedEntities) {

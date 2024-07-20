@@ -98,13 +98,13 @@ public class CaptureFriendCommand extends BaseCommand implements Listener {
 
         switch (entityName) {
           case "POLAR_BEAR":
-            status = new FriendStatus(50, 15, 5, 10);
+            status = new FriendStatus(50, 50,15, 5, 10);
             break;
           case "DOLPHIN":
-            status = new FriendStatus(40, 12, 3, 20);
+            status = new FriendStatus(40, 40, 12, 3, 20);
             break;
           case "HOGLIN":
-            status = new FriendStatus(60, 18, 8, 8);
+            status = new FriendStatus(60, 60, 18, 8, 8);
             break;
           default:
             return;

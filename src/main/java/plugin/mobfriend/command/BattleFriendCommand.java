@@ -1,9 +1,9 @@
 package plugin.mobfriend.command;
 
+import java.util.SplittableRandom;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -11,6 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Hoglin;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -47,20 +48,17 @@ public class BattleFriendCommand implements CommandExecutor {
       String friendType = friends.get(0); // 1匹だけ表示する
 
       EntityType friendEntityType;
-      FriendStatus friendStatus;
+      FriendStatus friendStatus = friendManager.getFriendStatus(player); // FriendManagerからステータスを取得
 
       switch (friendType) {
         case "POLAR_BEAR":
           friendEntityType = EntityType.POLAR_BEAR;
-          friendStatus = new FriendStatus(50, 15, 5, 10);
           break;
         case "DOLPHIN":
           friendEntityType = EntityType.DOLPHIN;
-          friendStatus = new FriendStatus(40, 12, 3, 20);
           break;
         case "HOGLIN":
           friendEntityType = EntityType.HOGLIN;
-          friendStatus = new FriendStatus(60, 18, 8, 8);
           break;
         default:
           return true;
@@ -68,18 +66,36 @@ public class BattleFriendCommand implements CommandExecutor {
 
       // フレンドと敵モブをスポーンさせる
       Location playerLocation = player.getLocation();
-      Location friendLocation = playerLocation.clone().add(2, 0, 2);
-      Location enemyLocation = playerLocation.clone().add(-2, 0, 2);
+      double x = playerLocation.getX();
+      double y = playerLocation.getY();
+      double z = playerLocation.getZ();
+
+      Location friendLocation = new Location(player.getWorld(), x + 2, y, z + 5);
+      Location enemyLocation = new Location(player.getWorld(),x - 2, y, z + 5);
+
       LivingEntity friend = (LivingEntity) player.getWorld().spawnEntity(friendLocation, friendEntityType);
       LivingEntity enemy = (LivingEntity) player.getWorld().spawnEntity(enemyLocation, EntityType.ZOMBIE); // 例としてZOMBIEを使用
 
       // 動かないようにする
-      friend.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
-      enemy.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
+      friend.setAI(false);
+      enemy.setAI(false);
+
+      if (friend instanceof Hoglin) {
+        ((Hoglin) friend).setImmuneToZombification(true); // ゾンビ化を防ぐ
+      }
+
+      // フレンドを敵に向かせる
+      Location enemyLoc = enemy.getLocation();
+      friendLocation.setDirection(enemyLoc.toVector().subtract(friendLocation.toVector()));
+      friend.teleport(friendLocation);
+
+      // 敵モブをフレンドに向かせる
+      enemyLocation.setDirection(friendLocation.toVector().subtract(enemyLocation.toVector()));
+      enemy.teleport(enemyLocation);
 
       // フレンドと敵モブのステータスを設定
       mobStatuses.put(friend, friendStatus);
-      mobStatuses.put(enemy, new FriendStatus(50, 12, 6, 8));
+      mobStatuses.put(enemy, new FriendStatus(50, 50, 12, 6, 8));
 
       // ボスバーの設定
       enemyBossBar = Bukkit.createBossBar("敵: ZOMBIE", BarColor.RED, BarStyle.SOLID);
@@ -105,12 +121,18 @@ public class BattleFriendCommand implements CommandExecutor {
             public void run() {
               if (friend.isDead() || enemy.isDead()) {
                 if (friend.isDead()) {
+                  friend.remove();
                   player.sendMessage(ChatColor.RED + "フレンドが倒されました…");
                   enemy.remove(); // フレンドが負けた場合に敵モブを消す
+                  enemyBossBar.removeAll();
+                  friendBossBar.removeAll();
                 } else {
+                  enemy.remove();
                   player.sendMessage(ChatColor.GREEN + "敵モブを倒しました！");
+                  friend.remove();
+                  enemyBossBar.removeAll();
+                  friendBossBar.removeAll();
                 }
-                cleanup(friend, enemy);
                 this.cancel();
                 return;
               }
@@ -120,19 +142,31 @@ public class BattleFriendCommand implements CommandExecutor {
 
               if (playerTurn) {
                 // プレイヤーのターン
+                friend.setAI(true);
+                enemy.setAI(true);
                 int damage = calculateDamage(friendStatus.getAttack(), enemyStatus.getDefense());
                 enemyStatus.setHp(enemyStatus.getHp() - damage);
+                simulateJump(friend);
+                enemy.damage(0); // ダメージを与えてエフェクトを発生させる
                 player.sendMessage(ChatColor.GREEN + "フレンドの攻撃！敵に" + damage + "のダメージを与えた！");
                 updateBossBar(enemyBossBar, enemyStatus);
+                friend.setAI(false);
+                enemy.setAI(false);
                 if (enemyStatus.getHp() <= 0) {
                   enemy.remove();
                 }
               } else {
                 // 敵のターン
+                friend.setAI(true);
+                enemy.setAI(true);
                 int damage = calculateDamage(enemyStatus.getAttack(), friendStatus.getDefense());
                 friendStatus.setHp(friendStatus.getHp() - damage);
+                simulateJump(enemy);
+                friend.damage(0);
                 player.sendMessage(ChatColor.RED + "敵の攻撃！フレンドに" + damage + "のダメージを与えた！");
                 updateBossBar(friendBossBar, friendStatus);
+                friend.setAI(false);
+                enemy.setAI(false);
                 if (friendStatus.getHp() <= 0) {
                   friend.remove();
                 }
@@ -149,20 +183,29 @@ public class BattleFriendCommand implements CommandExecutor {
     return false;
   }
 
+
+  private void simulateJump(LivingEntity entity) {
+    // ジャンプの開始位置
+    Location startLocation = entity.getLocation();
+    // ジャンプの終了位置
+    Location jumpLocation = startLocation.clone().add(0, 1, 0);
+
+    // ジャンプ動作をシミュレート
+    entity.teleport(jumpLocation);
+    Bukkit.getScheduler().runTaskLater(plugin, () -> entity.teleport(startLocation), 5L); // 0.25秒後に元の位置に戻す
+  }
+
   private int calculateDamage(int attack, int defense) {
-    int damage = attack - (defense / 2);
+    SplittableRandom random = new SplittableRandom();
+    int basicDamage = attack - (defense / 2);
+    int damage = basicDamage + random.nextInt(2);
     return damage > 0 ? damage : 1; // 最低でも1のダメージを与える
   }
 
   private void updateBossBar(BossBar bossBar, FriendStatus status) {
-    double progress = Math.max(0.0, Math.min(1.0, status.getHp() / 100.0));
+    double progress = Math.max(0.0, Math.min(1.0, (double) status.getHp() / status.getMaxHp()));
     bossBar.setProgress(progress);
   }
 
-  private void cleanup(LivingEntity friend, LivingEntity enemy) {
-      enemyBossBar.removeAll();
-      friendBossBar.removeAll();
-      friend.remove();
-      enemy.remove();
-    }
-  }
+}
+

@@ -8,16 +8,18 @@ import lombok.Setter;
 public class FriendStatus {
   private int level;
   private int hp;
+  private int maxHp;
   private int attack;
   private int defense;
   private int speed;
   private int experience;
   private int experienceToNextLevel;
 
-  public FriendStatus(int hp, int attack, int defense, int speed) {
+  public FriendStatus(int hp, int maxHp, int attack, int defense, int speed) {
     this.level = 1;
     this.hp = hp;
     this.attack = attack;
+    this.maxHp = maxHp;
     this.defense = defense;
     this.speed = speed;
     this.experience = 0;

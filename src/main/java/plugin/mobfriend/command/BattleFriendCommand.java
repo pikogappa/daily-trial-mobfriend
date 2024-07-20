@@ -141,36 +141,42 @@ public class BattleFriendCommand implements CommandExecutor {
               FriendStatus enemyStatus = mobStatuses.get(enemy);
 
               if (playerTurn) {
-                // プレイヤーのターン
-                friend.setAI(true);
-                enemy.setAI(true);
-                int damage = calculateDamage(friendStatus.getAttack(), enemyStatus.getDefense());
-                enemyStatus.setHp(enemyStatus.getHp() - damage);
-                simulateJump(friend);
-                enemy.damage(0); // ダメージを与えてエフェクトを発生させる
-                player.sendMessage(ChatColor.GREEN + "フレンドの攻撃！敵に" + damage + "のダメージを与えた！");
-                updateBossBar(enemyBossBar, enemyStatus);
-                friend.setAI(false);
-                enemy.setAI(false);
-                if (enemyStatus.getHp() <= 0) {
-                  enemy.remove();
-                }
+                performAttack(player, friend, enemy, true);
               } else {
-                // 敵のターン
-                friend.setAI(true);
-                enemy.setAI(true);
-                int damage = calculateDamage(enemyStatus.getAttack(), friendStatus.getDefense());
-                friendStatus.setHp(friendStatus.getHp() - damage);
-                simulateJump(enemy);
-                friend.damage(0);
-                player.sendMessage(ChatColor.RED + "敵の攻撃！フレンドに" + damage + "のダメージを与えた！");
-                updateBossBar(friendBossBar, friendStatus);
-                friend.setAI(false);
-                enemy.setAI(false);
-                if (friendStatus.getHp() <= 0) {
-                  friend.remove();
-                }
+                performAttack(player, enemy, friend, false);
               }
+
+//              if (playerTurn) {
+//                // プレイヤーのターン
+//                friend.setAI(true);
+//                enemy.setAI(true);
+//                int damage = calculateDamage(friendStatus.getAttack(), enemyStatus.getDefense());
+//                enemyStatus.setHp(enemyStatus.getHp() - damage);
+//                simulateJump(friend);
+//                enemy.damage(0); // ダメージを与えてエフェクトを発生させる
+//                player.sendMessage(ChatColor.GREEN + "フレンドの攻撃！敵に" + damage + "のダメージを与えた！");
+//                updateBossBar(enemyBossBar, enemyStatus);
+//                friend.setAI(false);
+//                enemy.setAI(false);
+//                if (enemyStatus.getHp() <= 0) {
+//                  enemy.remove();
+//                }
+//              } else {
+//                // 敵のターン
+//                friend.setAI(true);
+//                enemy.setAI(true);
+//                int damage = calculateDamage(enemyStatus.getAttack(), friendStatus.getDefense());
+//                friendStatus.setHp(friendStatus.getHp() - damage);
+//                simulateJump(enemy);
+//                friend.damage(0);
+//                player.sendMessage(ChatColor.RED + "敵の攻撃！フレンドに" + damage + "のダメージを与えた！");
+//                updateBossBar(friendBossBar, friendStatus);
+//                friend.setAI(false);
+//                enemy.setAI(false);
+//                if (friendStatus.getHp() <= 0) {
+//                  friend.remove();
+//                }
+//              }
 
               playerTurn = !playerTurn; // ターンの切り替え
             }
@@ -183,6 +189,29 @@ public class BattleFriendCommand implements CommandExecutor {
     return false;
   }
 
+
+  private void performAttack(Player player, LivingEntity attacker, LivingEntity target, boolean isFriendTurn) {
+    attacker.setAI(true);
+    target.setAI(true);
+    FriendStatus attackerStatus = mobStatuses.get(attacker);
+    FriendStatus targetStatus = mobStatuses.get(target);
+    int damage = calculateDamage(attackerStatus.getAttack(), targetStatus.getDefense());
+    targetStatus.setHp(targetStatus.getHp() - damage);
+    simulateJump(attacker);
+    target.damage(0); // ダメージを与えてエフェクトを発生させる
+    if (isFriendTurn) {
+      player.sendMessage(ChatColor.GREEN + "フレンドの攻撃！敵に" + damage + "のダメージを与えた！");
+      updateBossBar(enemyBossBar, targetStatus);
+    } else {
+      player.sendMessage(ChatColor.RED + "敵の攻撃！フレンドに" + damage + "のダメージを与えた！");
+      updateBossBar(friendBossBar, targetStatus);
+    }
+    attacker.setAI(false);
+    target.setAI(false);
+    if (targetStatus.getHp() <= 0) {
+      target.remove();
+    }
+  }
 
   private void simulateJump(LivingEntity entity) {
     // ジャンプの開始位置

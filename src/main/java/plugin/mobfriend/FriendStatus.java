@@ -5,6 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
+
+/**
+ * フレンドのステータスを管理するクラス。
+ */
 public class FriendStatus {
   private int level;
   private int hp;

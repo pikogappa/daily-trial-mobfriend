@@ -1,7 +1,6 @@
 package plugin.mobfriend.command;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,9 +16,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import plugin.mobfriend.FriendManager;
 import plugin.mobfriend.FriendStatus;
-
 import java.util.List;
 
+/**
+ * プレイヤーのフレンドリストを表示するコマンド
+ */
 public class ShowFriendCommand implements CommandExecutor, Listener {
   private FriendManager friendManager;
   private static final String FRIEND_LIST_TITLE = "あなたのフレンド";
@@ -46,16 +47,17 @@ public class ShowFriendCommand implements CommandExecutor, Listener {
       return;
     }
 
-    ItemStack friendItem = getItemStack(friends,player);
+    ItemStack friendItem = createFriendItem(friends,player);
     friendInventory.setItem(0, friendItem);
 
+    ItemStack barrierItem = createBarrierItem();
     // 2-9スロットにバリアブロックを配置
-    ItemStack barrierItem = new ItemStack(Material.BARRIER);
-    ItemMeta barrierMeta = barrierItem.getItemMeta();
-    if (barrierMeta != null) {
-      barrierMeta.setDisplayName(ChatColor.RED + "使用不可");
-      barrierItem.setItemMeta(barrierMeta);
-    }
+//    ItemStack barrierItem = new ItemStack(Material.BARRIER);
+//    ItemMeta barrierMeta = barrierItem.getItemMeta();
+//    if (barrierMeta != null) {
+//      barrierMeta.setDisplayName(ChatColor.RED + "使用不可");
+//      barrierItem.setItemMeta(barrierMeta);
+//    }
     for (int i = 1; i < 9; i++) {
       friendInventory.setItem(i, barrierItem);
     }
@@ -63,9 +65,16 @@ public class ShowFriendCommand implements CommandExecutor, Listener {
     player.openInventory(friendInventory);
   }
 
-  private ItemStack getItemStack(List<String> friends, Player player) {
+  /**
+   * フレンドリストのアイテムを作成する。
+   *
+   * @param friends プレイヤーのフレンドリスト
+   * @param player コマンドを実行したプレイヤー
+   * @return フレンドリストのアイテム
+   */
+  private ItemStack createFriendItem(List<String> friends, Player player) {
     ItemStack friendItem;
-    String friend = friends.get(0); // 1匹だけ表示する
+    String friend = friends.get(0);
     friendItem = switch (friend) {
       case "POLAR_BEAR" -> new ItemStack(Material.POLAR_BEAR_SPAWN_EGG);
       case "DOLPHIN" -> new ItemStack(Material.DOLPHIN_SPAWN_EGG);
@@ -80,7 +89,6 @@ public class ShowFriendCommand implements CommandExecutor, Listener {
     }
 
     FriendStatus status = friendManager.getFriendStatus(player);
-    System.out.println(status);
     if (status != null && meta != null)  {
       List<String> lore = new ArrayList<>();
       lore.add(ChatColor.GREEN + "レベル: " + status.getLevel());
@@ -95,6 +103,26 @@ public class ShowFriendCommand implements CommandExecutor, Listener {
     return friendItem;
   }
 
+  /**
+   * 使用不可のバリアアイテムを作成する
+   *
+   * @return バリアアイテム
+   */
+  private ItemStack createBarrierItem() {
+    ItemStack barrierItem = new ItemStack(Material.BARRIER);
+    ItemMeta barrierMeta = barrierItem.getItemMeta();
+    if (barrierMeta != null) {
+      barrierMeta.setDisplayName(ChatColor.RED + "使用不可");
+      barrierItem.setItemMeta(barrierMeta);
+    }
+    return barrierItem;
+  }
+
+  /**
+   * インベントリクリックイベントを処理する
+   *
+   * @param event インベントリクリックイベント
+   */
   @EventHandler
   public void onInventoryClick(InventoryClickEvent event) {
     if (event.getView().getTitle().equals(FRIEND_LIST_TITLE)) {

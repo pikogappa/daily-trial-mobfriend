@@ -23,9 +23,14 @@ public class FriendStatus {
     this.defense = defense;
     this.speed = speed;
     this.experience = 0;
-    this.experienceToNextLevel = 100; // 初期値として100の経験値でレベルアップ
+    this.experienceToNextLevel = 100;
   }
 
+  /**
+   * 経験値を追加し、レベルアップの判定を行う
+   *
+   * @param amount 追加する経験値
+   */
   public void addExperience(int amount) {
     this.experience += amount;
     if (this.experience >= this.experienceToNextLevel) {
@@ -33,13 +38,16 @@ public class FriendStatus {
     }
   }
 
+  /**
+   * レベルアップ時にステータスを増加させる。
+   */
   private void levelUp() {
     this.level++;
     this.experience -= this.experienceToNextLevel;
-    this.experienceToNextLevel *= 1.5; // 次のレベルに必要な経験値を増加
-    this.hp += 10; // HPを増加
-    this.attack += 2; // 攻撃力を増加
-    this.defense += 2; // 防御力を増加
-    this.speed += 1; // スピードを増加
+    this.experienceToNextLevel *= 1.5;
+    this.hp += 10;
+    this.attack += 2;
+    this.defense += 2;
+    this.speed += 1;
   }
 }

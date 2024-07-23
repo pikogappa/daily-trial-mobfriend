@@ -7,6 +7,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import plugin.mobfriend.FriendManager;
 
+/**
+ * フレンドとお別れするコマンド
+ * FriendManagerクラスのremoveAllFriendsメソッドを利用する
+ * フレンドがいないときにはいないというメッセージを出す
+ */
+
 public class ByeFriendCommand implements CommandExecutor {
   private FriendManager friendManager;
 
@@ -17,7 +23,7 @@ public class ByeFriendCommand implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (sender instanceof Player player) {
-      if (friendManager.checkFriends(player)) {
+      if (friendManager.checkFriend(player)) {
         friendManager.removeAllFriends(player);
         player.sendMessage(ChatColor.GREEN + "フレンドとお別れしました！");
       } else {

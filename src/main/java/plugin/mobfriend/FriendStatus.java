@@ -2,6 +2,8 @@ package plugin.mobfriend;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 @Getter
 @Setter
@@ -33,25 +35,36 @@ public class FriendStatus {
   /**
    * 経験値を追加し、レベルアップの判定を行う
    *
-   * @param amount 追加する経験値
+   * @param experience 獲得経験値
    */
-  public void addExperience(int amount) {
-    this.experience += amount;
+  public void addExperience(int experience, Player player) {
+    this.experience += experience;
+    player.sendMessage(ChatColor.YELLOW + "経験値を " + experience + " 獲得しました！");
     if (this.experience >= this.experienceToNextLevel) {
-      levelUp();
+      levelUp(player);
     }
   }
 
   /**
-   * レベルアップ時にステータスを増加させる。
+   * レベルアップ時にステータスを増加させる
    */
-  private void levelUp() {
+  private void levelUp(Player player) {
     this.level++;
     this.experience -= this.experienceToNextLevel;
     this.experienceToNextLevel *= 1.5;
-    this.hp += 10;
-    this.attack += 2;
+    this.maxHp += 10;
+    this.attack += 3;
     this.defense += 2;
     this.speed += 1;
+
+    player.sendMessage(ChatColor.GOLD + "フレンドがレベルアップしました！");
+    recoverToMaxHp();
+  }
+
+  /**
+   * フレンドのHPを全快させる
+   */
+  public void recoverToMaxHp() {
+    this.hp = this.maxHp;
   }
 }

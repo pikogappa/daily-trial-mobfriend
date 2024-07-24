@@ -58,7 +58,7 @@ public class FriendManager {
   }
 
   /**
-   * プレイヤーのすべてのフレンドを削除する。
+   * プレイヤーのフレンドを削除する
    *
    * @param player プレイヤー
    */

@@ -30,6 +30,9 @@ import java.util.Map;
 public class BattleFriendCommand implements CommandExecutor {
   private static final long BATTLE_START_DELAY = 100L;
   private static final long BATTLE_INTERVAL = 40L;
+  private static final int EXPERIENCE_WIN = 100;
+  private static final int EXPERIENCE_LOSE = 50;
+
   private FriendManager friendManager;
   private JavaPlugin plugin;
   private Map<LivingEntity, FriendStatus> mobStatuses = new HashMap<>();
@@ -148,7 +151,7 @@ public class BattleFriendCommand implements CommandExecutor {
             }
 
             performAttack(player, playerTurn ? friend : enemy, playerTurn ? enemy : friend, playerTurn);
-            playerTurn = !playerTurn; // ターンの切り替え
+            playerTurn = !playerTurn;
           }
         }.runTaskTimer(plugin, 0L, BATTLE_INTERVAL);
       }
@@ -180,15 +183,25 @@ public class BattleFriendCommand implements CommandExecutor {
    * @param player コマンドを実行したプレイヤー
    */
   private void handleBattleEnd(LivingEntity friend, LivingEntity enemy, Player player) {
+
+    FriendStatus friendStatus = mobStatuses.get(friend);
+    int experienceGained;
+
     if (friend.isDead()) {
       friend.remove();
       player.sendMessage(ChatColor.RED + "フレンドが倒されました…");
+      experienceGained = EXPERIENCE_LOSE;
+
       enemy.remove();
     } else {
       enemy.remove();
       player.sendMessage(ChatColor.GREEN + "敵モブを倒しました！");
+      experienceGained = EXPERIENCE_WIN;
       friend.remove();
     }
+
+    mobStatuses.get(friend).recoverToMaxHp();
+    friendStatus.addExperience(experienceGained,player);
     enemyBossBar.removeAll();
     friendBossBar.removeAll();
   }

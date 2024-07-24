@@ -75,7 +75,7 @@ public class CaptureFriendCommand extends BaseCommand implements Listener {
   private void friendCandidate(Player player) {
     Location playerLocation = player.getLocation();
     for (int i = 0; i < friendTypes.size(); i++) {
-      double x = playerLocation.getX() + (-2 + 2 * i);
+      double x = playerLocation.getX() + (-3 + 3 * i);
       double y = playerLocation.getY();
       double z = playerLocation.getZ() + 5;
 
@@ -116,9 +116,9 @@ public class CaptureFriendCommand extends BaseCommand implements Listener {
         player.sendMessage(ChatColor.GREEN + entityName + " をフレンドにしました！");
 
         switch (entityName) {
-          case "POLAR_BEAR" -> status = new FriendStatus(50, 50, 15, 5, 10);
-          case "DOLPHIN" -> status = new FriendStatus(40, 40, 12, 3, 20);
           case "HOGLIN" -> status = new FriendStatus(60, 60, 18, 8, 8);
+          case "DOLPHIN" -> status = new FriendStatus(40, 40, 12, 3, 20);
+          case "POLAR_BEAR" -> status = new FriendStatus(50, 50, 15, 5, 10);
           default -> {
             return;
           }

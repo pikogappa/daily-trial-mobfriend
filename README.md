@@ -1,5 +1,5 @@
 ## はじめに
-- 本リポジトリは2024年2月からJava学習しているぴこ(Xアカウント: @pikogappa)が作ったMineCraftプラグイン「MobFriend」に関するものです
+- 本リポジトリはJava学習者の「ぴこ」(Xアカウント: @pikogappa)が作ったMineCraftプラグイン「MobFriend」に関するものです
 - Java学習者が作ったデモ要素の強いプラグインとなりますので、ご利用いただくことでのトラブル等は一切責任を負いかねます
 ## コンセプト
 - 私の子どもが「こんなMineCraftのゲームをつくってほしい」という要望をもとに、要件定義・設計・実装をしました！
@@ -9,7 +9,7 @@
 - MineCraft内のコマンド機能で決められたコマンド（「/CaptureFriendCommand」等）を入力することで、フレンドの「捕獲」、「表示」、「バトル」、「お別れ」等を行えます
 - データベースとの連携機能は実装していないため、サーバからログアウトすると本ゲームに関するデータが消える点にご注意ください
 ## デモ動画
-https://github.com/user-attachments/assets/c08f46e6-3c8d-47a9-a228-4a2836c6c905
+https://github.com/user-attachments/assets/513cb0f1-b48b-4d40-abe1-b66bc93b802a
 ## 環境
 - 開発言語: Java SE
 - アプリケーション: MineCraft

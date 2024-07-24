@@ -12,8 +12,8 @@
 https://github.com/user-attachments/assets/513cb0f1-b48b-4d40-abe1-b66bc93b802a
 ## 環境
 - 開発言語: Java Oracle OpenJDK 17.0.10
-- アプリケーション: Minecraft　1．20．4
-- サーバ：Spigot　1．20．4
+- アプリケーション: Minecraft　1.20.4
+- サーバ：Spigot　1.20.4
 - 検証済みOS: Mac OS 14.5（23F79）
 ## 利用方法
 - gradle shadowJar等で、本プラグインのfat Jarを作成してください

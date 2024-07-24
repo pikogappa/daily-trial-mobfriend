@@ -9,7 +9,7 @@
 - MineCraft内のコマンド機能で決められたコマンド（「/CaptureFriendCommand」等）を入力することで、フレンドの「捕獲」、「表示」、「バトル」、「お別れ」等を行えます
 - データベースとの連携機能は実装していないため、サーバからログアウトすると本ゲームに関するデータが消える点にご注意ください
 ## デモ動画
-
+https://github.com/user-attachments/assets/c08f46e6-3c8d-47a9-a228-4a2836c6c905
 ## 環境
 - 開発言語: Java SE
 - アプリケーション: MineCraft

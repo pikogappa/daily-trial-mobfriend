@@ -220,14 +220,22 @@ public class BattleFriendCommand implements CommandExecutor {
     FriendStatus attackerStatus = mobStatuses.get(attacker);
     FriendStatus targetStatus = mobStatuses.get(target);
 
-    int damage = calculateDamage(attackerStatus.getAttack(), targetStatus.getDefense());
+    boolean isCritical = isCriticalHit();
+
+    int damage = calculateDamage(attackerStatus.getAttack(), targetStatus.getDefense(), isFriendTurn, isCritical);
     targetStatus.setHp(targetStatus.getHp() - damage);
 
     simulateJump(attacker);
     target.damage(0);
 
     if (isFriendTurn) {
-      player.sendMessage(ChatColor.GREEN + "フレンドの攻撃！敵に" + damage + "のダメージを与えた！");
+//      player.sendMessage(ChatColor.GREEN + "フレンドの攻撃！敵に" + damage + "のダメージを与えた！");
+//      updateBossBar(enemyBossBar, targetStatus);
+      if (isCritical) {
+        player.sendMessage(ChatColor.GOLD + "フレンドの攻撃！クリティカル！敵に" + damage + "のダメージを与えた！");
+      } else {
+        player.sendMessage(ChatColor.GREEN + "フレンドの攻撃！敵に" + damage + "のダメージを与えた！");
+      }
       updateBossBar(enemyBossBar, targetStatus);
     } else {
       player.sendMessage(ChatColor.RED + "敵の攻撃！フレンドに" + damage + "のダメージを与えた！");
@@ -240,6 +248,16 @@ public class BattleFriendCommand implements CommandExecutor {
     if (targetStatus.getHp() <= 0) {
       target.remove();
     }
+  }
+
+  /**
+   * 確率10%で攻撃をクリティカルにする
+   *
+   * @return クリティカル判定結果
+   */
+  private boolean isCriticalHit() {
+    SplittableRandom random = new SplittableRandom();
+    return random.nextInt(100) < 10;
   }
 
   /**
@@ -262,11 +280,15 @@ public class BattleFriendCommand implements CommandExecutor {
    * @param defense 防御力
    * @return 計算されたダメージ(最低でも1のダメージを与える)
    */
-
-  private int calculateDamage(int attack, int defense) {
-    SplittableRandom random = new SplittableRandom();
+  private int calculateDamage(int attack, int defense, boolean isFriendTurn, boolean isCritical) {
+    SplittableRandom randomDamage = new SplittableRandom();
     int basicDamage = attack - (defense / 2);
-    int damage = basicDamage + random.nextInt(2);
+    int damage = basicDamage + randomDamage.nextInt(2);
+
+    if (isFriendTurn && isCritical) {
+      damage *= 2;
+    }
+
     return damage > 0 ? damage : 1;
   }
 

@@ -51,7 +51,7 @@ public class FriendStatus {
   private void levelUp(Player player) {
     this.level++;
     this.experience -= this.experienceToNextLevel;
-    this.experienceToNextLevel *= 1.5;
+    this.experienceToNextLevel *= 2;
     this.maxHp += 10;
     this.attack += 3;
     this.defense += 2;

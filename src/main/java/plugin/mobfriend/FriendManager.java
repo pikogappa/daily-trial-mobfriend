@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 
 public class FriendManager {
-  private Map<Player, List<String>> playerFriends = new HashMap<>();
+  private Map<String, List<String>> playerFriends = new HashMap<>();
   private Map<String, FriendStatus> playerFriendStatuses = new HashMap<>();
 
   /**
@@ -23,8 +23,8 @@ public class FriendManager {
    * @param status フレンドのステータス
    */
   public void addFriend(Player player, String friendName, FriendStatus status) {
-    playerFriends.computeIfAbsent(player, k -> new ArrayList<>()).add(friendName);
-    playerFriendStatuses.put(player.getUniqueId().toString(), status);
+    playerFriends.computeIfAbsent(player.getName(), k -> new ArrayList<>()).add(friendName);
+    playerFriendStatuses.put(player.getName(), status);
   }
 
   /**
@@ -33,8 +33,9 @@ public class FriendManager {
    * @param player プレイヤー
    * @return フレンドリスト
    */
+
   public List<String> getFriends(Player player) {
-    return playerFriends.getOrDefault(player, new ArrayList<>());
+    return playerFriends.getOrDefault(player.getName(), new ArrayList<>());
   }
 
   /**
@@ -44,7 +45,7 @@ public class FriendManager {
    * @return フレンドがいる場合はtrue、いない場合はfalse
    */
   public boolean checkFriend(Player player) {
-    return playerFriends.containsKey(player) && !playerFriends.get(player).isEmpty();
+    return playerFriends.containsKey(player.getName()) && !playerFriends.get(player.getName()).isEmpty();
   }
 
   /**
@@ -54,7 +55,7 @@ public class FriendManager {
    * @return フレンドのステータス
    */
   public FriendStatus getFriendStatus(Player player) {
-    return playerFriendStatuses.get(player.getUniqueId().toString());
+    return playerFriendStatuses.get(player.getName());
   }
 
   /**
@@ -63,8 +64,8 @@ public class FriendManager {
    * @param player プレイヤー
    */
   public void removeAllFriends(Player player) {
-    playerFriends.remove(player);
-    playerFriendStatuses.remove(player.getUniqueId().toString());
+    playerFriends.remove(player.getName());
+    playerFriendStatuses.remove(player.getName());
   }
 
 }

@@ -26,7 +26,6 @@ import java.util.Map;
 /**
  * フレンドと敵モブで戦闘するコマンド
  */
-
 public class BattleFriendCommand implements CommandExecutor {
   private static final long BATTLE_START_DELAY = 100L;
   private static final long BATTLE_INTERVAL = 40L;
@@ -46,8 +45,7 @@ public class BattleFriendCommand implements CommandExecutor {
 
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (sender instanceof Player) {
-      Player player = (Player) sender;
+    if (sender instanceof Player player) {
 
       if (!friendManager.checkFriend(player)) {
         player.sendMessage(ChatColor.RED + "フレンドがいません！");
@@ -82,7 +80,6 @@ public class BattleFriendCommand implements CommandExecutor {
 
       // バトル開始
       player.sendTitle( "バトル開始",  friendType + " vs ZOMBIE", 0, 60, 0);
-
       startBattle(friend, enemy, player);
 
       return true;
@@ -229,8 +226,6 @@ public class BattleFriendCommand implements CommandExecutor {
     target.damage(0);
 
     if (isFriendTurn) {
-//      player.sendMessage(ChatColor.GREEN + "フレンドの攻撃！敵に" + damage + "のダメージを与えた！");
-//      updateBossBar(enemyBossBar, targetStatus);
       if (isCritical) {
         player.sendMessage(ChatColor.GOLD + "フレンドの攻撃！クリティカル！敵に" + damage + "のダメージを与えた！");
       } else {

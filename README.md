@@ -1,12 +1,12 @@
 ## はじめに
-- 本リポジトリはJava学習者の「ぴこ」(Xアカウント: @pikogappa)が作ったMineCraftプラグイン「MobFriend」に関するものです
+- 本リポジトリはJava学習者の「ぴこ」(Xアカウント: @pikogappa)が作ったMinecraftプラグイン「MobFriend」に関するものです
 - ご利用いただくことでのトラブル等は一切責任を負いかねます
 ## コンセプト
-- 私の子どもが「こんなMineCraftのゲームをつくってほしい」という要望をもとに、要件定義・設計・実装をしました！
+- 私の子どもが「こんなMinecraftのゲームをつくってほしい」という要望をもとに、要件定義・設計・実装をしました！
 - どこかで見たことあるようなゲームかもしれませんが、温かい目でご覧いただければ幸いです
 ## ゲーム概要
 - 本ゲームでは決められたモブを仲間（フレンド）にして育成や戦闘ができるゲームです
-- MineCraft内のコマンド機能で決められたコマンド（「/capturefriend」等）を入力することで、フレンドの「捕獲」、「表示」、「バトル」、「お別れ」等を行えます
+- Minecraft内のコマンド機能で決められたコマンド（「/capturefriend」等）を入力することで、フレンドの「捕獲」、「表示」、「バトル」、「お別れ」等を行えます
 - データベースとの連携機能は実装していないため、サーバからログアウトすると本ゲームに関するデータが消える点にご注意ください
 ## デモ動画
 https://github.com/user-attachments/assets/513cb0f1-b48b-4d40-abe1-b66bc93b802a
@@ -18,7 +18,7 @@ https://github.com/user-attachments/assets/513cb0f1-b48b-4d40-abe1-b66bc93b802a
 ## 利用方法
 - gradle shadowJar等で、本プラグインのfat Jarを作成してください
 - ご自身のMinecraftサーバーの「plugins」フォルダの中に先ほど作成したfat Jarファイルを追加してください
-- サーバーおよびMineCraftを起動し、「/CaptureFriendCommand」等のコマンドが実行できるかご確認ください
+- サーバーおよびMinecraftを起動し、「/CaptureFriendCommand」等のコマンドが実行できるかご確認ください
 ## コマンド
 - /capturefriend
   - フレンドを捕獲するコマンドです
